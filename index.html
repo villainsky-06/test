@@ -12,7 +12,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
       font-family: Arial, sans-serif;
     }
     .container {
@@ -21,12 +20,10 @@
       padding: 30px;
       max-width: 400px;
       width: 100%;
-      animation: fadeIn 1s ease-in-out, glow 2s ease-in-out infinite alternate;
       box-shadow: 0 0 20px rgba(0, 191, 255, 0.7);
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
       color: #e91e63;
     }
     label {
@@ -41,7 +38,6 @@
       margin-top: 5px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 14px;
     }
     button {
       margin-top: 20px;
@@ -54,9 +50,6 @@
       font-size: 16px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #d81b60;
-    }
     .message-box {
       margin-top: 20px;
       padding: 15px;
@@ -64,7 +57,6 @@
       border-left: 5px solid #e91e63;
       border-radius: 8px;
       display: none;
-      color: #444;
     }
   </style>
 </head>
@@ -73,10 +65,10 @@
     <h1>Confess 🌸</h1>
 
     <label for="nama">Nama Kamu</label>
-    <input type="text" id="nama" placeholder="Masukkan namamu..."/>
+    <input type="text" id="nama" />
 
-    <label for="nomorTarget">Nomor Target (WhatsApp)</label>
-    <input type="text" id="nomorTarget" placeholder="Contoh: 628xxxxxx"/>
+    <label for="nomorTarget">Nomor Target</label>
+    <input type="text" id="nomorTarget" />
 
     <label for="tujuan">Untuk Siapa?</label>
     <select id="tujuan">
@@ -85,61 +77,59 @@
     </select>
 
     <label for="pesan">Pesan</label>
-    <textarea id="pesan" rows="4" placeholder="Tulis isi hatimu di sini..."></textarea>
+    <textarea id="pesan" rows="4"></textarea>
 
-    <button id="tombolKirim">Kirim</button>
+    <button onclick="kirimPesan()">Kirim</button>
 
     <div class="message-box" id="hasil">
       Tulisan Anda telah terkirim, tunggu jawabannya ya~ 💌
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  <!-- Firebase SDK versi kompatibel -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    const firebaseConfig = {
+  <script>
+    var firebaseConfig = {
       apiKey: "AIzaSyCHU9iYteDTbTdGhz5zaFiNv-y1Tqj2DSg",
       authDomain: "web-shop-7df3d.firebaseapp.com",
+      databaseURL: "https://web-shop-7df3d-default-rtdb.firebaseio.com",
       projectId: "web-shop-7df3d",
-      storageBucket: "web-shop-7df3d.firebasestorage.app",
+      storageBucket: "web-shop-7df3d.appspot.com",
       messagingSenderId: "587054063426",
-      appId: "1:587054063426:web:190419f7ba3a5dedc4b2db",
-      measurementId: "G-D3YYTQTSNT"
+      appId: "1:587054063426:web:190419f7ba3a5dedc4b2db"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
 
-    document.getElementById("tombolKirim").addEventListener("click", () => {
-      const nama = document.getElementById("nama").value.trim();
-      const nomorTarget = document.getElementById("nomorTarget").value.trim();
-      const tujuan = document.getElementById("tujuan").value;
-      const pesan = document.getElementById("pesan").value.trim();
-      const hasil = document.getElementById("hasil");
+    function kirimPesan() {
+      var nama = document.getElementById("nama").value.trim();
+      var nomorTarget = document.getElementById("nomorTarget").value.trim();
+      var tujuan = document.getElementById("tujuan").value;
+      var pesan = document.getElementById("pesan").value.trim();
+      var hasil = document.getElementById("hasil");
 
       if (!nama || !pesan || !nomorTarget) {
-        alert("Harap isi semua kolom terlebih dahulu ya~");
+        alert("Isi semua kolom ya!");
         return;
       }
 
-      const data = {
-        nama,
-        nomorTarget,
-        tujuan,
-        pesan,
+      var data = {
+        nama: nama,
+        nomorTarget: nomorTarget,
+        tujuan: tujuan,
+        pesan: pesan,
         waktu: new Date().toISOString()
       };
 
-      push(ref(db, "confesses"), data)
-        .then(() => {
-          hasil.style.display = "block";
-        })
-        .catch((error) => {
-          console.error("Gagal kirim data:", error);
-          alert("Terjadi kesalahan saat mengirim.");
-        });
-    });
+      database.ref("confesses").push(data).then(function() {
+        hasil.style.display = "block";
+      }).catch(function(error) {
+        alert("Gagal mengirim: " + error.message);
+      });
+    }
   </script>
 </body>
 </html>
