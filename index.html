@@ -20,7 +20,7 @@
       padding: 30px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.7);
     }
     h1 {
       text-align: center;
@@ -38,7 +38,6 @@
       margin-top: 5px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 14px;
     }
     button {
       margin-top: 20px;
@@ -66,19 +65,19 @@
     <h1>Confess 🌸</h1>
 
     <label for="nama">Nama Kamu</label>
-    <input type="text" id="nama" placeholder="Contoh: Rahasia" />
+    <input type="text" id="nama" />
 
     <label for="nomorTarget">Nomor Target</label>
-    <input type="text" id="nomorTarget" placeholder="628xxxxxxxxx" />
+    <input type="text" id="nomorTarget" />
 
     <label for="tujuan">Untuk Siapa?</label>
     <select id="tujuan">
-      <option value="Crush 💘">Crush 💘</option>
-      <option value="Teman 🧑‍🤝‍🧑">Teman 🧑‍🤝‍🧑</option>
+      <option value="crush">Crush 💘</option>
+      <option value="teman">Teman 🧑‍🤝‍🧑</option>
     </select>
 
     <label for="pesan">Pesan</label>
-    <textarea id="pesan" rows="4" placeholder="Tulis pesan kamu di sini..."></textarea>
+    <textarea id="pesan" rows="4"></textarea>
 
     <button onclick="kirimPesan()">Kirim</button>
 
@@ -87,12 +86,34 @@
     </div>
   </div>
 
+  <!-- Fitur Tutup Web Jam 00:30 - 06:30 WIB -->
+  <script>
+    function cekJamTutup() {
+      var sekarang = new Date();
+      var utc = sekarang.getTime() + (sekarang.getTimezoneOffset() * 60000);
+      var wib = new Date(utc + (7 * 60 * 60 * 1000));
+      var jam = wib.getHours();
+      var menit = wib.getMinutes();
+
+      if ((jam === 0 && menit >= 30) || (jam > 0 && jam < 6) || (jam === 6 && menit < 30)) {
+        document.body.innerHTML = `
+          <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+            <h1>⏳ Web Ditutup Sementara</h1>
+            <p>Layanan Confess hanya tersedia antara <strong>06:30 - 00:30 WIB</strong>.</p>
+            <p>Silakan kembali nanti ya 🌙</p>
+          </div>
+        `;
+      }
+    }
+    cekJamTutup();
+  </script>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+  <!-- Firebase Config -->
   <script>
-    // Konfigurasi Firebase
     var firebaseConfig = {
       apiKey: "AIzaSyCHU9iYteDTbTdGhz5zaFiNv-y1Tqj2DSg",
       authDomain: "web-shop-7df3d.firebaseapp.com",
@@ -103,7 +124,6 @@
       appId: "1:587054063426:web:190419f7ba3a5dedc4b2db"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     var database = firebase.database();
 
@@ -114,7 +134,7 @@
       var pesan = document.getElementById("pesan").value.trim();
       var hasil = document.getElementById("hasil");
 
-      if (!nama || !nomorTarget || !pesan) {
+      if (!nama || !pesan || !nomorTarget) {
         alert("Isi semua kolom ya!");
         return;
       }
@@ -127,9 +147,12 @@
         waktu: new Date().toISOString()
       };
 
-      database.ref("confesses").push(data).then(function() {
+      database.ref("confesses").push(data).then(function () {
         hasil.style.display = "block";
-      }).catch(function(error) {
+        document.getElementById("nama").value = "";
+        document.getElementById("nomorTarget").value = "";
+        document.getElementById("pesan").value = "";
+      }).catch(function (error) {
         alert("Gagal mengirim: " + error.message);
       });
     }
