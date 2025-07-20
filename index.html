@@ -20,7 +20,7 @@
       padding: 30px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 0 20px rgba(0, 191, 255, 0.7);
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
     }
     h1 {
       text-align: center;
@@ -38,6 +38,7 @@
       margin-top: 5px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 14px;
     }
     button {
       margin-top: 20px;
@@ -65,19 +66,19 @@
     <h1>Confess 🌸</h1>
 
     <label for="nama">Nama Kamu</label>
-    <input type="text" id="nama" />
+    <input type="text" id="nama" placeholder="Contoh: Rahasia" />
 
     <label for="nomorTarget">Nomor Target</label>
-    <input type="text" id="nomorTarget" />
+    <input type="text" id="nomorTarget" placeholder="628xxxxxxxxx" />
 
     <label for="tujuan">Untuk Siapa?</label>
     <select id="tujuan">
-      <option value="crush">Crush 💘</option>
-      <option value="teman">Teman 🧑‍🤝‍🧑</option>
+      <option value="Crush 💘">Crush 💘</option>
+      <option value="Teman 🧑‍🤝‍🧑">Teman 🧑‍🤝‍🧑</option>
     </select>
 
     <label for="pesan">Pesan</label>
-    <textarea id="pesan" rows="4"></textarea>
+    <textarea id="pesan" rows="4" placeholder="Tulis pesan kamu di sini..."></textarea>
 
     <button onclick="kirimPesan()">Kirim</button>
 
@@ -86,11 +87,12 @@
     </div>
   </div>
 
-  <!-- Firebase SDK versi kompatibel -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
+    // Konfigurasi Firebase
     var firebaseConfig = {
       apiKey: "AIzaSyCHU9iYteDTbTdGhz5zaFiNv-y1Tqj2DSg",
       authDomain: "web-shop-7df3d.firebaseapp.com",
@@ -101,6 +103,7 @@
       appId: "1:587054063426:web:190419f7ba3a5dedc4b2db"
     };
 
+    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     var database = firebase.database();
 
@@ -111,7 +114,7 @@
       var pesan = document.getElementById("pesan").value.trim();
       var hasil = document.getElementById("hasil");
 
-      if (!nama || !pesan || !nomorTarget) {
+      if (!nama || !nomorTarget || !pesan) {
         alert("Isi semua kolom ya!");
         return;
       }
