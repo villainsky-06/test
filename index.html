@@ -102,18 +102,138 @@
             <p>Layanan Confess hanya tersedia antara <strong>06:30 - 00:30 WIB</strong>.</p>
             <p>Silakan kembali nanti ya 🌙</p>
           </div>
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confess Sakura</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #ccffcc, #b3ffcc);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0, 255, 170, 0.7);
+    }
+    h1 {
+      text-align: center;
+      color: #009966;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #00cc88;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .message-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e6fff5;
+      border-left: 5px solid #00cc88;
+      border-radius: 8px;
+      display: none;
+    }
+    .flower {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-image: url('https://i.ibb.co/4sF4MZx/sakura-pink.png');
+      background-size: cover;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Confess 🌿</h1><label for="nama">Nama Kamu</label>
+<input type="text" id="nama" />
+
+<label for="nomorTarget">Nomor Target</label>
+<input type="text" id="nomorTarget" />
+
+<label for="tujuan">Untuk Siapa?</label>
+<select id="tujuan">
+  <option value="crush">Crush 💘</option>
+  <option value="teman">Teman 🧑‍🤝‍🧑</option>
+</select>
+
+<label for="pesan">Pesan</label>
+<textarea id="pesan" rows="4"></textarea>
+
+<button onclick="kirimPesan()">Kirim</button>
+
+<div class="message-box" id="hasil">
+  Tulisan Anda telah terkirim, tunggu jawabannya ya~ 💌
+</div>
+
+  </div>  <!-- Bunga jatuh -->  <script>
+    for (let i = 0; i < 20; i++) {
+      const flower = document.createElement('div');
+      flower.className = 'flower';
+      flower.style.left = Math.random() * 100 + 'vw';
+      flower.style.animationDuration = (3 + Math.random() * 5) + 's';
+      flower.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(flower);
+    }
+  </script>  <!-- Tutup Web -->  <script>
+    function cekJamTutup() {
+      var sekarang = new Date();
+      var utc = sekarang.getTime() + (sekarang.getTimezoneOffset() * 60000);
+      var wib = new Date(utc + (7 * 60 * 60 * 1000));
+      var jam = wib.getHours();
+      var menit = wib.getMinutes();
+
+      if ((jam === 0 && menit >= 30) || (jam > 0 && jam < 6) || (jam === 6 && menit < 30)) {
+        document.body.innerHTML = `
+          <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+            <h1>⏳ Web Ditutup Sementara</h1>
+            <p>Layanan Confess hanya tersedia antara <strong>06:30 - 00:30 WIB</strong>.</p>
+            <p>Silakan kembali nanti ya 🌙</p>
+          </div>
         `;
       }
     }
     cekJamTutup();
-  </script>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-  <!-- Firebase Config -->
-  <script>
+  </script>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>  <script>
     var firebaseConfig = {
       apiKey: "AIzaSyCHU9iYteDTbTdGhz5zaFiNv-y1Tqj2DSg",
       authDomain: "web-shop-7df3d.firebaseapp.com",
@@ -156,6 +276,5 @@
         alert("Gagal mengirim: " + error.message);
       });
     }
-  </script>
-</body>
+  </script></body>
 </html>
